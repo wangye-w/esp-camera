@@ -8,6 +8,7 @@
 #include "esp_lcd_panel_ops.h"
 #include "protocol_examples_common.h"
 #include "myiic.h"
+#include "xl9555.h"
 
 #define MDNS_HOST_NAME "esp32s3"
 #define MDNS_INSTANCE "esp home web server"
