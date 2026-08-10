@@ -36,5 +36,6 @@ void app_main(void)
 
     ESP_ERROR_CHECK(example_connect());
 
-    myiic_init();
+    myiic_init();               /* MYIIC初始化 */
+    xl9555_init();              /* XL9555初始化 */
 }
