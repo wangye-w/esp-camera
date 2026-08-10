@@ -2,7 +2,12 @@
 #include "nvs_flash.h"
 #include "esp_netif.h"
 #include "esp_event.h"
+#include "driver/ledc.h"
+#include "esp_lcd_panel_io.h"
+#include "esp_lcd_panel_vendor.h"
+#include "esp_lcd_panel_ops.h"
 #include "protocol_examples_common.h"
+#include "myiic.h"
 
 #define MDNS_HOST_NAME "esp32s3"
 #define MDNS_INSTANCE "esp home web server"
@@ -30,4 +35,6 @@ void app_main(void)
     initialise_mdns();
 
     ESP_ERROR_CHECK(example_connect());
+
+    myiic_init();
 }
