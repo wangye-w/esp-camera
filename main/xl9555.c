@@ -52,6 +52,49 @@ esp_err_t xl9555_write_byte(uint8_t reg, uint8_t *data, size_t len)
 }
 
 /**
+ * @brief       控制某个IO的电平
+ * @param       pin     : 控制的IO
+ * @param       val     : 电平
+ * @retval      返回所有IO状态
+ */
+uint16_t xl9555_pin_write(uint16_t pin, int val)
+{
+    uint8_t w_data[2];
+    uint16_t temp = 0x0000;
+
+    xl9555_read_byte(w_data, 2);
+
+    if (pin <= 0x0080)
+    {
+        if (val)
+        {
+            w_data[0] |= (uint8_t)(0xFF & pin);
+        }
+        else
+        {
+            w_data[0] &= ~(uint8_t)(0xFF & pin);
+        }
+    }
+    else
+    {
+        if (val)
+        {
+            w_data[1] |= (uint8_t)(0xFF & (pin >> 8));
+        }
+        else
+        {
+            w_data[1] &= ~(uint8_t)(0xFF & (pin >> 8));
+        }
+    }
+
+    temp = ((uint16_t)w_data[1] << 8) | w_data[0]; 
+
+    xl9555_write_byte(XL9555_OUTPUT_PORT0_REG, w_data, 2);
+    
+    return temp;
+}
+
+/**
  * @brief       XL9555的IO配置
  * @param       config_value：IO配置输入或者输出
  * @retval      返回设置的数值
@@ -99,7 +142,7 @@ esp_err_t xl9555_init()
     /* 配置那些扩展管脚为输入输出模式 */
     xl9555_ioconfig(0xF003);
     /* 关闭蜂鸣器 */
-    // xl9555_pin_write(BEEP_IO, 1);
+    xl9555_pin_write(BEEP_IO, 0);
     /* 关闭喇叭 */
     // xl9555_pin_write(SPK_EN_IO, 1);
 
