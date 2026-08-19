@@ -60,8 +60,8 @@ esp_err_t spilcd_init()
     };
     ESP_ERROR_CHECK(spi_bus_initialize(MY_SPI_HOST, &buscfg, SPI_DMA_CH_AUTO));
 
-    spilcddev.pheight = 240;  /* 高度 */
-    spilcddev.pwidth  = 320;   /* 宽度 */
+    spilcddev.pheight = 320;  /* 高度 */
+    spilcddev.pwidth  = 240;   /* 宽度 */
 
     ESP_LOGI(TAG, "Install panel IO");
     esp_lcd_panel_io_handle_t io_handle = NULL;
