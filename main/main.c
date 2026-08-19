@@ -32,11 +32,11 @@ static void initialise_mdns(void)
 void app_main(void)
 {
     ESP_ERROR_CHECK(nvs_flash_init());
-    ESP_ERROR_CHECK(esp_netif_init());
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-    initialise_mdns();
+    // ESP_ERROR_CHECK(esp_netif_init());
+    // ESP_ERROR_CHECK(esp_event_loop_create_default());
+    // initialise_mdns();
 
-    ESP_ERROR_CHECK(example_connect());
+    // ESP_ERROR_CHECK(example_connect());
 
     myiic_init();               /* MYIIC初始化 */
     xl9555_init();              /* XL9555初始化 */
