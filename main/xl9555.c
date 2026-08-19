@@ -142,9 +142,9 @@ esp_err_t xl9555_init()
     /* 配置那些扩展管脚为输入输出模式 */
     xl9555_ioconfig(0xF003);
     /* 关闭蜂鸣器 */
-    xl9555_pin_write(BEEP_IO, 0);
+    xl9555_pin_write(BEEP_IO, 1);
     /* 关闭喇叭 */
-    // xl9555_pin_write(SPK_EN_IO, 1);
+    xl9555_pin_write(SPK_EN_IO, 1);
 
     return ESP_OK;
 }

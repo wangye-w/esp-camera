@@ -135,21 +135,22 @@ void spilcd_display_dir(uint8_t dir)
  * @param           color：颜色值
  * @retval          无
  */
+#define nums 20
 void spilcd_clear(uint16_t color)
 {
     /* 以 40 行作为缓冲，提高速率，若出现内存不足，可以减少缓冲行数 */
-    uint16_t *buffer = heap_caps_malloc(spilcddev.width * sizeof(uint16_t) * 40, MALLOC_CAP_DMA);
+    uint16_t *buffer = heap_caps_malloc(spilcddev.width * sizeof(uint16_t) * nums, MALLOC_CAP_DMA);
     if (buffer == NULL) {
         ESP_LOGE(TAG, "Memory for bitmap is not enough");
         return;
     }
 
     uint16_t color_tmp = ((color & 0x00FF) << 8) | ((color & 0xFF00) >> 8);
-    for (uint32_t i = 0; i < spilcddev.width * 40; ++i) {
+    for (uint32_t i = 0; i < spilcddev.width * nums; ++i) {
         buffer[i] = color_tmp;
     }
-    for (uint16_t i = 0; i < spilcddev.height; i+=40) {
-        esp_lcd_panel_draw_bitmap(panel_handle, 0, i, spilcddev.width, i + 40, buffer);
+    for (uint16_t i = 0; i < spilcddev.height; i+=nums) {
+        esp_lcd_panel_draw_bitmap(panel_handle, 0, i, spilcddev.width, i + nums, buffer);
     }
 
     refresh_done_flag = 0;
