@@ -9,6 +9,7 @@
 #include "protocol_examples_common.h"
 #include "myiic.h"
 #include "xl9555.h"
+#include "spilcd.h"
 
 #define MDNS_HOST_NAME "esp32s3"
 #define MDNS_INSTANCE "esp home web server"
@@ -39,4 +40,5 @@ void app_main(void)
 
     myiic_init();               /* MYIIC初始化 */
     xl9555_init();              /* XL9555初始化 */
+    spilcd_init();
 }

@@ -31,3 +31,4 @@
 #define KEY0_IO                     0x8000
 
 esp_err_t xl9555_init();
+uint16_t xl9555_pin_write(uint16_t pin, int val);
