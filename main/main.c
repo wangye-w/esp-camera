@@ -44,20 +44,11 @@ void app_main(void)
     myiic_init();               /* MYIIC初始化 */
     xl9555_init();              /* XL9555初始化 */
     spilcd_init();
+    init_camera();
 
-    ESP_LOGI("MEM", "PSRAM total: %u",
-         heap_caps_get_total_size(MALLOC_CAP_SPIRAM));
-
-    ESP_LOGI("MEM", "PSRAM free: %u",
-            heap_caps_get_free_size(MALLOC_CAP_SPIRAM));
-
-    ESP_LOGI("MEM", "PSRAM largest: %u",
-            heap_caps_get_largest_free_block(MALLOC_CAP_SPIRAM));
-    // init_camera();
-
-    // while (1) {
-    //     fb = esp_camera_fb_get();
-    //     esp_lcd_panel_draw_bitmap(panel_handle, 0, 0, fb->width, fb->height, fb->buf);
-    //     esp_camera_fb_return(fb);
-    // }
+    while (1) {
+        fb = esp_camera_fb_get();
+        esp_lcd_panel_draw_bitmap(panel_handle, 0, 0, fb->width, fb->height, fb->buf);
+        esp_camera_fb_return(fb);
+    }
 }
