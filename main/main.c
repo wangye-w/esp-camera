@@ -10,6 +10,8 @@
 #include "myiic.h"
 #include "xl9555.h"
 #include "spilcd.h"
+#include "camera.h"
+#include "esp_camera.h"
 
 #define MDNS_HOST_NAME "esp32s3"
 #define MDNS_INSTANCE "esp home web server"
@@ -31,6 +33,7 @@ static void initialise_mdns(void)
 
 void app_main(void)
 {
+    camera_fb_t *fb = NULL;
     ESP_ERROR_CHECK(nvs_flash_init());
     // ESP_ERROR_CHECK(esp_netif_init());
     // ESP_ERROR_CHECK(esp_event_loop_create_default());
@@ -41,4 +44,11 @@ void app_main(void)
     myiic_init();               /* MYIIC初始化 */
     xl9555_init();              /* XL9555初始化 */
     spilcd_init();
+    init_camera();
+
+    while (1) {
+        fb = esp_camera_fb_get();
+        esp_lcd_panel_draw_bitmap(panel_handle, 0, 0, fb->width, fb->height, fb->buf);
+        esp_camera_fb_return(fb);
+    }
 }

@@ -10,15 +10,6 @@
 
 static const char* TAG = "spilcd";
 
-#define PIN_NUM_BK_LIGHT
-#define SPI_SCLK_PIN    GPIO_NUM_12
-#define SPI_MOSI_PIN    GPIO_NUM_11
-#define SPI_MISO_PIN    GPIO_NUM_13
-#define MY_SPI_HOST         SPI2_HOST
-#define LCD_DC_PIN      GPIO_NUM_40 
-#define LCD_CS_PIN      GPIO_NUM_21
-#define LCD_CLK_HZ      (60 * 1000 * 1000)
-
 esp_lcd_panel_handle_t panel_handle = NULL;
 
 typedef struct
@@ -60,8 +51,8 @@ esp_err_t spilcd_init()
     };
     ESP_ERROR_CHECK(spi_bus_initialize(MY_SPI_HOST, &buscfg, SPI_DMA_CH_AUTO));
 
-    spilcddev.pheight = 320;  /* 高度 */
-    spilcddev.pwidth  = 240;   /* 宽度 */
+    spilcddev.pheight = 240;    /* 高度 */
+    spilcddev.pwidth  = 320;    /* 宽度 */
 
     ESP_LOGI(TAG, "Install panel IO");
     esp_lcd_panel_io_handle_t io_handle = NULL;
@@ -120,13 +111,15 @@ void spilcd_display_dir(uint8_t dir)
         }
 
         spilcddev.dir = dir;
-        spilcddev.width = spilcddev.pwidth;
-        spilcddev.height = spilcddev.pheight;
 
         if (spilcddev.dir == 0) {
+            spilcddev.width = spilcddev.pheight;
+            spilcddev.height = spilcddev.pwidth;
             esp_lcd_panel_swap_xy(panel_handle, false);
             esp_lcd_panel_mirror(panel_handle, false, false);
         } else {
+            spilcddev.width = spilcddev.pwidth;
+            spilcddev.height = spilcddev.pheight;
             esp_lcd_panel_swap_xy(panel_handle, false);
             esp_lcd_panel_mirror(panel_handle, false, false);
         }
@@ -138,22 +131,21 @@ void spilcd_display_dir(uint8_t dir)
  * @param           color：颜色值
  * @retval          无
  */
-#define nums 20
 void spilcd_clear(uint16_t color)
 {
-    /* 以 40 行作为缓冲，提高速率，若出现内存不足，可以减少缓冲行数 */
-    uint16_t *buffer = heap_caps_malloc(spilcddev.width * sizeof(uint16_t) * nums, MALLOC_CAP_DMA);
+    /* 以 BUFFER_LINE 行作为缓冲，提高速率，若出现内存不足，可以减少缓冲行数 */
+    uint16_t *buffer = heap_caps_malloc(spilcddev.width * sizeof(uint16_t) * BUFFER_LINE, MALLOC_CAP_DMA);
     if (buffer == NULL) {
         ESP_LOGE(TAG, "Memory for bitmap is not enough");
         return;
     }
 
     uint16_t color_tmp = ((color & 0x00FF) << 8) | ((color & 0xFF00) >> 8);
-    for (uint32_t i = 0; i < spilcddev.width * nums; ++i) {
+    for (uint32_t i = 0; i < spilcddev.width * BUFFER_LINE; ++i) {
         buffer[i] = color_tmp;
     }
-    for (uint16_t i = 0; i < spilcddev.height; i+=nums) {
-        esp_lcd_panel_draw_bitmap(panel_handle, 0, i, spilcddev.width, i + nums, buffer);
+    for (uint16_t i = 0; i < spilcddev.height; i += BUFFER_LINE) {
+        esp_lcd_panel_draw_bitmap(panel_handle, 0, i, spilcddev.width, i + BUFFER_LINE, buffer);
     }
 
     refresh_done_flag = 0;
